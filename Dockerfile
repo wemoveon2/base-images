@@ -24,7 +24,6 @@ RUN apt-get update && \
     gcc \
     libpython3-dev \
     # drivers and nvidia-smi
-    nvidia-cuda-toolkit \ 
     nvidia-utils-${DRIVER_VERSION} \
     nvidia-driver-${DRIVER_VERSION} \
     libcap2-bin && \
