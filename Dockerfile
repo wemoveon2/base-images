@@ -16,6 +16,7 @@ RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends --yes \
     software-properties-common && \
     add-apt-repository ppa:graphics-drivers/ppa && \
+    add-apt-repository ppa:deadsnakes/ppa && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends --yes \
     python${PYTHON_VERSION} \
@@ -44,8 +45,7 @@ COPY --from=build /bin/sh /bin/sh
 COPY --from=build --chown=appuser:appuser /venv /venv
 COPY --from=build --chown=appuser:appuser /usr/local/cuda /usr/local/cuda 
 # we must overwrite the python binary to use the virtualenv since distroless uses 3.11 and we might
-# need another version
-# Verify the variables
+# be using another version
 COPY --from=build /usr/bin/python${PYTHON_VERSION} /usr/bin/python${PYTHON_VERSION}
 COPY --from=build /usr/lib/python${PYTHON_VERSION} /usr/lib/python${PYTHON_VERSION}
 RUN rm /usr/bin/python3 && \
