@@ -32,6 +32,7 @@ RUN apt-get update && \
     /venv/bin/pip install --disable-pip-version-check --upgrade pip setuptools wheel && \
     # Create a non-root user with minimal privileges and set file permissions
     adduser --disabled-password --gecos '' appuser && \ 
+    ln -sf /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
     apt-get clean && rm -rf /var/lib/apt/lists/* 
 
 FROM gcr.io/distroless/python3-debian12
@@ -47,8 +48,8 @@ COPY --from=build --chown=appuser:appuser /usr/local/cuda /usr/local/cuda
 # we must overwrite the python binary to use the virtualenv since distroless uses 3.11 and we might
 # be using another version
 COPY --from=build /usr/bin/python${PYTHON_VERSION} /usr/bin/python${PYTHON_VERSION}
+COPY --from=build /usr/bin/python3 /usr/bin/python3 
 COPY --from=build /usr/lib/python${PYTHON_VERSION} /usr/lib/python${PYTHON_VERSION}
-RUN ln -sf /usr/bin/python${PYTHON_VERSION} /usr/bin/python3
 # for debugging
 COPY --from=build /usr/bin/nvidia-smi /usr/bin/nvidia-smi
 # driver libraries
