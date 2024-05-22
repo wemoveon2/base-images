@@ -7,7 +7,7 @@
 # * Export environment variables needed for CUDA
 # * Create a non-root user with minimal privileges and use it
 # * Includes /bin/sh in final image for downstream package installation
-FROM nvidia/cuda:12.1.0-base-ubuntu20.04 AS build
+FROM nvidia/cuda:${CUDA_VERSION}-base-ubuntu20.04 AS build
 ENV DEBIAN_FRONTEND=noninteractive 
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends --yes \
@@ -17,17 +17,17 @@ RUN apt-get update && \
     add-apt-repository ppa:graphics-drivers/ppa && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends --yes \
-    python3.11 \
-    python3.11-venv \
-    python3.11-dev \
+    python${PYTHON_VERSION} \
+    python${PYTHON_VERSION}-venv \
+    python${PYTHON_VERSION}-dev \
     gcc \
     libpython3-dev \
     # drivers and nvidia-smi
     nvidia-cuda-toolkit \ 
-    nvidia-utils-550 \
-    nvidia-driver-550 \
+    nvidia-utils-${DRIVER_VERSION} \
+    nvidia-driver-${DRIVER_VERSION} \
     libcap2-bin && \
-    python3.11 -m venv /venv && \
+    python${PYTHON_VERSION} -m venv /venv && \
     /venv/bin/pip install --upgrade pip setuptools wheel && \
     # Create a non-root user with minimal privileges and set file permissions
     adduser --disabled-password --gecos '' appuser && \ 
