@@ -35,6 +35,7 @@ RUN apt-get update && \
     apt-get clean && rm -rf /var/lib/apt/lists/* 
 
 FROM gcr.io/distroless/python3-debian12
+ARG PYTHON_VERSION
 # files for user profiles
 COPY --from=build /etc/passwd /etc/passwd
 COPY --from=build /etc/group /etc/group
@@ -43,6 +44,13 @@ COPY --from=build /bin/sh /bin/sh
 # virtual env and cuda
 COPY --from=build --chown=appuser:appuser /venv /venv
 COPY --from=build --chown=appuser:appuser /usr/local/cuda /usr/local/cuda 
+# we must overwrite the python binary to use the virtualenv since distroless uses 3.11 and we might
+# need another version
+# Verify the variables
+COPY --from=build /usr/bin/python${PYTHON_VERSION} /usr/bin/python${PYTHON_VERSION}
+COPY --from=build /usr/lib/python${PYTHON_VERSION} /usr/lib/python${PYTHON_VERSION}
+RUN rm /usr/bin/python3 && \
+    ln -s /usr/bin/python${PYTHON_VERSION} /usr/bin/python3
 # for debugging
 COPY --from=build /usr/bin/nvidia-smi /usr/bin/nvidia-smi
 # driver libraries
