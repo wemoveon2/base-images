@@ -29,7 +29,7 @@ RUN apt-get update && \
     nvidia-driver-${DRIVER_VERSION} \
     libcap2-bin && \
     python${PYTHON_VERSION} -m venv /venv && \
-    /venv/bin/pip install --upgrade pip setuptools wheel && \
+    /venv/bin/pip install --disable-pip-version-check --upgrade pip setuptools wheel && \
     # Create a non-root user with minimal privileges and set file permissions
     adduser --disabled-password --gecos '' appuser && \ 
     apt-get clean && rm -rf /var/lib/apt/lists/* 
