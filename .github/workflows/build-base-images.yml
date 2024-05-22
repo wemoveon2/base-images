@@ -1,0 +1,34 @@
+name: Build Base Images
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        cuda_version: [11.7.1, 12.1.0]
+        python_version: [3.8, 3.9, 3.10, 3.11]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to Repository
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}  
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: clarifai/base_images:python-${{ matrix.python_version }}-cuda-${{ matrxi.cuda_version }}
+          build-args: |
+            CUDA_VERSION=${{ matrix.cuda_version }}
+            PYTHON_VERSION=${{ matrix.python_version }}
