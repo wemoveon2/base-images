@@ -48,8 +48,7 @@ COPY --from=build --chown=appuser:appuser /usr/local/cuda /usr/local/cuda
 # be using another version
 COPY --from=build /usr/bin/python${PYTHON_VERSION} /usr/bin/python${PYTHON_VERSION}
 COPY --from=build /usr/lib/python${PYTHON_VERSION} /usr/lib/python${PYTHON_VERSION}
-RUN rm /usr/bin/python3 && \
-    ln -s /usr/bin/python${PYTHON_VERSION} /usr/bin/python3
+RUN ln -sf /usr/bin/python${PYTHON_VERSION} /usr/bin/python3
 # for debugging
 COPY --from=build /usr/bin/nvidia-smi /usr/bin/nvidia-smi
 # driver libraries
