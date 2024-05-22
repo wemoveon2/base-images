@@ -7,6 +7,10 @@
 # * Export environment variables needed for CUDA
 # * Create a non-root user with minimal privileges and use it
 # * Includes /bin/sh in final image for downstream package installation
+ARG CUDA_VERSION
+ARG PYTHON_VERSION
+ARG TORCH_VERSION
+ARG DRIVER_VERSION
 FROM nvidia/cuda:${CUDA_VERSION}-base-ubuntu20.04 AS build
 ENV DEBIAN_FRONTEND=noninteractive 
 RUN apt-get update && \
