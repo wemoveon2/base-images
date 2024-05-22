@@ -8,15 +8,13 @@
 # * Create a non-root user with minimal privileges and use it
 # * Includes /bin/sh in final image for downstream package installation
 ARG CUDA_VERSION
-FROM nvidia/cuda:${CUDA_VERSION}-base-ubuntu20.04 AS build
+FROM nvidia/cuda:${CUDA_VERSION}-base-ubuntu22.04 AS build
 ARG PYTHON_VERSION
 ARG DRIVER_VERSION
 ENV DEBIAN_FRONTEND=noninteractive 
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends --yes \
     software-properties-common && \
-    # Ubuntu 20.04 uses 3.8 as the default Python version, we need 3.11
-    add-apt-repository ppa:deadsnakes/ppa && \
     add-apt-repository ppa:graphics-drivers/ppa && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends --yes \
