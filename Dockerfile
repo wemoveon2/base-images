@@ -8,10 +8,9 @@
 # * Create a non-root user with minimal privileges and use it
 # * Includes /bin/sh in final image for downstream package installation
 ARG CUDA_VERSION
-ARG PYTHON_VERSION
-ARG TORCH_VERSION
-ARG DRIVER_VERSION
 FROM nvidia/cuda:${CUDA_VERSION}-base-ubuntu20.04 AS build
+ARG PYTHON_VERSION
+ARG DRIVER_VERSION
 ENV DEBIAN_FRONTEND=noninteractive 
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends --yes \
