@@ -34,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./base_image
-          file: ./cpu/Dockerfile
+          file: ./base_image/cpu/Dockerfile
           platforms: ${{ matrix.platform }}
           push: true
           tags: wemoveon/base_images:python-${{ matrix.python_version }}-cpu-${{ env.arch }}
