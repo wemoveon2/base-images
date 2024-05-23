@@ -5,7 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'base_image/**'
+      - 'base_image/gpu/**'
+      - 'base_image/checker.sh'
 jobs:
   build:
     continue-on-error: true
@@ -29,18 +30,11 @@ jobs:
       - name: Extract Image Architecture
         id: extract-arch
         run: echo "arch=${{ matrix.platform#'linux/' }}" >> $GITHUB_ENV
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ matrix.python_version }}-${{ matrix.cuda_version }}-${{ matrix.platform }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: .
-          file: ./Dockerfile
+          context: ./base_image
+          file: ./gpu/Dockerfile
           platforms: ${{ matrix.platform }}
           push: true
           tags: wemoveon/base_images:python-${{ matrix.python_version }}-cuda-${{ matrix.cuda_version }}-${{ env.arch }}
@@ -49,3 +43,5 @@ jobs:
             PYTHON_VERSION=${{ matrix.python_version }}
             DRIVER_VERSION=550 
             TARGET_PLATFORM=${{ matrix.platform }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
