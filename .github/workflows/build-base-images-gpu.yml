@@ -1,4 +1,4 @@
-name: Build Base Images
+name: Build GPU Base Images
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     paths:
       - 'base_image/gpu/**'
       - 'base_image/checker.sh'
-      - '.github/workflows/build-base-images.yml'
+      - '.github/workflows/build-base-images-gpu.yml'
 jobs:
   build:
     continue-on-error: true
