@@ -43,5 +43,5 @@ jobs:
             PYTHON_VERSION=${{ matrix.python_version }}
             DRIVER_VERSION=550 
             TARGET_PLATFORM=${{ matrix.platform }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=registry,ref=wemoveon/base_images:python-${{ matrix.python_version }}-cuda-${{ matrix.cuda_version }}-${{ env.arch }}-cache,mode=max,compression=zstd,
+          cache-from: type=registry,ref=wemoveon/base_images:python-${{ matrix.python_version }}-cuda-${{ matrix.cuda_version }}-${{ env.arch }}-cache
