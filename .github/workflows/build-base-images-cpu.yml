@@ -41,5 +41,5 @@ jobs:
           build-args: |
             PYTHON_VERSION=${{ matrix.python_version }}
             TARGET_PLATFORM=${{ matrix.platform }}
-          cache-to: type=registry,ref=wemoveon/base_images:python-${{ matrix.python_version }}-cpu-${{ env.arch }}-cache,mode=max,compression=zstd,
+          cache-to: type=registry,ref=wemoveon/base_images:python-${{ matrix.python_version }}-cpu-${{ env.arch }}-cache,mode=max,compression=zstd
           cache-from: type=registry,ref=wemoveon/base_images:python-${{ matrix.python_version }}-cpu-${{ env.arch }}-cache
