@@ -12,6 +12,7 @@ ARG CUDA_VERSION
 FROM --platform=$TARGET_PLATFORM nvidia/cuda:${CUDA_VERSION}-base-ubuntu22.04 AS build
 ARG PYTHON_VERSION
 ARG DRIVER_VERSION
+ARG TARGET_PLATFORM
 ENV DEBIAN_FRONTEND=noninteractive 
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends --yes \
@@ -36,23 +37,10 @@ RUN apt-get update && \
     ln -sf /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
     apt-get clean && rm -rf /var/lib/apt/lists/* 
 
-FROM debian:12-slim AS intermediate
-ARG TARGET_PLATFORM
-RUN apt-get update && \
-    apt-get install --no-install-suggests --no-install-recommends --yes \
-    coreutils && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
 # Copy driver libraries based on architecture
 RUN if [ "${TARGET_PLATFORM}" = "linux/amd64" ]; then \
-        mkdir -p /usr/lib/x86_64-linux-gnu && \
-        cp -r /usr/lib/x86_64-linux-gnu/libcuda.so* /usr/lib/x86_64-linux-gnu/ && \
-        cp -r /usr/lib/x86_64-linux-gnu/libnvidia-ml.so* /usr/lib/x86_64-linux-gnu/ \
         export FOLDER_NAM="x86_64-linux-gnu"; \
     elif [ "${TARGET_PLATFORM}" = "linux/arm64" ]; then \
-        mkdir -p /usr/lib/aarch64-linux-gnu && \
-        cp -r /usr/lib/aarch64-linux-gnu/libcuda.so* /usr/lib/aarch64-linux-gnu/ && \
-        cp -r /usr/lib/aarch64-linux-gnu/libnvidia-ml.so* /usr/lib/aarch64-linux-gnu/ \
         export FOLDER_NAME="aarch64-linux-gnu"; \
     fi
 
@@ -75,8 +63,8 @@ COPY --from=build /usr/lib/python${PYTHON_VERSION} /usr/lib/python${PYTHON_VERSI
 # for debugging
 COPY --from=build /usr/bin/nvidia-smi /usr/bin/nvidia-smi
 # Copy driver libraries based on architecture
-COPY --from=intermediate /usr/lib/${FOLDER_NAME}/libcuda.so* /usr/lib/${FOLDER_NAME}/
-COPY --from=intermediate /usr/lib/${FOLDER_NAME}/libnvidia-ml.so* /usr/lib/${FOLDER_NAME}/
+COPY --from=build /usr/lib/${FOLDER_NAME}/libcuda.so* /usr/lib/${FOLDER_NAME}/
+COPY --from=build /usr/lib/${FOLDER_NAME}/libnvidia-ml.so* /usr/lib/${FOLDER_NAME}/
 # sh cmd validator 
 COPY --chmod=555 checker.sh /checker.sh
 # need awk for checker.sh
