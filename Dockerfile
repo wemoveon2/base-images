@@ -7,8 +7,9 @@
 # * Export environment variables needed for CUDA
 # * Create a non-root user with minimal privileges and use it
 # * Includes /bin/sh in final image for downstream package installation
+ARG TARGET_PLATFORM
 ARG CUDA_VERSION
-FROM nvidia/cuda:${CUDA_VERSION}-base-ubuntu22.04 AS build
+FROM --platform=$TARGET_PLATFORM nvidia/cuda:${CUDA_VERSION}-base-ubuntu22.04 AS build
 ARG PYTHON_VERSION
 ARG DRIVER_VERSION
 ENV DEBIAN_FRONTEND=noninteractive 
@@ -52,9 +53,17 @@ COPY --from=build /usr/bin/python3 /usr/bin/python3
 COPY --from=build /usr/lib/python${PYTHON_VERSION} /usr/lib/python${PYTHON_VERSION}
 # for debugging
 COPY --from=build /usr/bin/nvidia-smi /usr/bin/nvidia-smi
-# driver libraries
-COPY --from=build /usr/lib/x86_64-linux-gnu/libcuda.so* /usr/lib/x86_64-linux-gnu/
-COPY --from=build /usr/lib/x86_64-linux-gnu/libnvidia-ml.so* /usr/lib/x86_64-linux-gnu/
+# Copy driver libraries based on architecture
+ARG TARGETPLATFORM
+RUN if [ "${TARGETPLATFORM}" = "linux/amd64" ]; then \
+        mkdir -p /usr/lib/x86_64-linux-gnu && \
+        cp -r /usr/lib/x86_64-linux-gnu/libcuda.so* /usr/lib/x86_64-linux-gnu/ && \
+        cp -r /usr/lib/x86_64-linux-gnu/libnvidia-ml.so* /usr/lib/x86_64-linux-gnu/; \
+    elif [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
+        mkdir -p /usr/lib/aarch64-linux-gnu && \
+        cp -r /usr/lib/aarch64-linux-gnu/libcuda.so* /usr/lib/aarch64-linux-gnu/ && \
+        cp -r /usr/lib/aarch64-linux-gnu/libnvidia-ml.so* /usr/lib/aarch64-linux-gnu/; \
+    fi
 # sh cmd validator 
 COPY --chmod=555 checker.sh /checker.sh
 # need awk for checker.sh
