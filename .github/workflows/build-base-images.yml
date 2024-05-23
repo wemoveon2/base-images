@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'base_image/**'
 jobs:
   build:
     continue-on-error: true
