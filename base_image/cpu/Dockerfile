@@ -30,7 +30,7 @@ RUN apt-get update && \
     apt-get clean && rm -rf /var/lib/apt/lists/* 
 
 ARG TARGET_PLATFORM
-FROM --platform=$TARGET_PLATFORM gcr.io/distroless/python3-debian12
+FROM --platform=$TARGET_PLATFORM gcr.io/distroless/python3-debian12:latest
 ARG PYTHON_VERSION
 # files for user profiles
 COPY --from=build /etc/passwd /etc/passwd
