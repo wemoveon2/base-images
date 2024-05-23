@@ -11,7 +11,8 @@ ARG PYTHON_VERSION
 ENV DEBIAN_FRONTEND=noninteractive 
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends --yes \
-    software-properties-common && \
+    software-properties-common \
+    gpg-agent && \
     add-apt-repository ppa:deadsnakes/ppa && \
     apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends --yes \
