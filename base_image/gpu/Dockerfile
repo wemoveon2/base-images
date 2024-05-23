@@ -55,7 +55,7 @@ COPY --from=build /etc/group /etc/group
 COPY --from=build /bin/sh /bin/sh
 # virtual env and cuda
 COPY --from=build --chown=appuser:appuser /venv /venv
-COPY --from=build --chown=appuser:appuser /usr/local/cuda /usr/local/cuda 
+COPY --from=build --chmod=755 /usr/local/cuda /usr/local/cuda 
 # we must overwrite the python binary to use the virtualenv since distroless uses 3.11 and we might
 # be using another version
 COPY --from=build /usr/bin/python${PYTHON_VERSION} /usr/bin/python${PYTHON_VERSION}
