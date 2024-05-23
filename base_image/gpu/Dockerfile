@@ -45,7 +45,8 @@ RUN if [ "${TARGET_PLATFORM}" = "linux/amd64" ]; then \
     fi
 
 ARG FOLDER_NAME
-FROM gcr.io/distroless/python3-debian12
+ARG TARGET_PLATFORM
+FROM --platform=$TARGET_PLATFORM gcr.io/distroless/python3-debian12
 ARG PYTHON_VERSION
 # files for user profiles
 COPY --from=build /etc/passwd /etc/passwd
