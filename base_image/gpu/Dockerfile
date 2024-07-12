@@ -39,7 +39,7 @@ RUN apt-get update && \
 
 # Copy driver libraries based on architecture
 RUN if [ "${TARGET_PLATFORM}" = "linux/amd64" ]; then \
-        export FOLDER_NAM="x86_64-linux-gnu"; \
+        export FOLDER_NAME="x86_64-linux-gnu"; \
     elif [ "${TARGET_PLATFORM}" = "linux/arm64" ]; then \
         export FOLDER_NAME="aarch64-linux-gnu"; \
     fi
